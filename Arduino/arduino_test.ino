@@ -42,9 +42,9 @@ void loop() {
   int pinRead2 = analogRead(inPin2);
   
   // calculate V
-  float pVolt0 = pinRead0 / 80.0 * 5.0;
-  float pVolt1 = pinRead1 / 80.0 * 5.0;
-  float pVolt2 = pinRead2 / 80.0 * 5.0;
+  float pVolt0 = pinRead0;
+  float pVolt1 = pinRead1;
+  float pVolt2 = pinRead2;
   
   float GFP = pVolt0;
   float Laser = pVolt1;
@@ -52,18 +52,18 @@ void loop() {
   
   for (int i=1; i<10; i++)
   {
-  pVolt0 = pinRead0 / 80.0 * 5.0;
+  pVolt0 = pinRead0;
   GFP = GFP+pVolt0;
-  pVolt1 = pinRead1 / 80.0 * 5.0;
+  pVolt1 = pinRead1;
   Laser = Laser+pVolt1;
-  pVolt2 = pinRead2 / 80.0 * 5.0;
+  pVolt2 = pinRead2;
   mCherry = mCherry+pVolt2;
   delay(2000);
   }
   
-  GFP = GFP/10;
-  Laser = Laser/10;
-  mCherry = mCherry/10;
+  GFP = GFP/(2*1023);
+  Laser = Laser/(2*1023);
+  mCherry = mCherry/(2*1023);
   
   // print in terminal
   Serial.print(" -GFP-> ");
@@ -87,9 +87,9 @@ void loop() {
   pinRead2 = analogRead(inPin2);
   
   // calculate V
-  pVolt0 = pinRead0 / 80.0 * 5.0;
-  pVolt1 = pinRead1 / 80.0 * 5.0;
-  pVolt2 = pinRead2 / 80.0 * 5.0;
+  pVolt0 = pinRead0;
+  pVolt1 = pinRead1;
+  pVolt2 = pinRead2;
   
   GFP = pVolt0;
   Laser = pVolt1;
@@ -97,18 +97,18 @@ void loop() {
 
   for (int i=1; i<10; i++)
   {
-  pVolt0 = pinRead0 / 80.0 * 5.0;
+  pVolt0 = pinRead0;
   GFP = GFP+pVolt0;
-  pVolt1 = pinRead1 / 80.0 * 5.0;
+  pVolt1 = pinRead1;
   Laser = Laser+pVolt1;
-  pVolt2 = pinRead2 / 80.0 * 5.0;
+  pVolt2 = pinRead2;
   mCherry = mCherry+pVolt2;
   delay(2000);
   }
   
-  GFP = GFP/10;
-  Laser = Laser/10;
-  mCherry = mCherry/10;
+  GFP = GFP/(2*1023);
+  Laser = Laser/(2*1023);
+  mCherry = mCherry/(2*1023);
   
   // print in terminal
   Serial.print(" -GFP-> ");
@@ -132,9 +132,9 @@ void loop() {
   pinRead2 = analogRead(inPin2);
   
   // calculate V
-  pVolt0 = pinRead0 / 80.0 * 5.0;
-  pVolt1 = pinRead1 / 80.0 * 5.0;
-  pVolt2 = pinRead2 / 80.0 * 5.0;
+  pVolt0 = pinRead0;
+  pVolt1 = pinRead1;
+  pVolt2 = pinRead2;
   
   GFP = pVolt0;
   Laser = pVolt1;
@@ -142,18 +142,18 @@ void loop() {
 
   for (int i=1; i<10; i++)
   {
-  pVolt0 = pinRead0 / 80.0 * 5.0;
+  pVolt0 = pinRead0;
   GFP = GFP+pVolt0;
-  pVolt1 = pinRead1 / 80.0 * 5.0;
+  pVolt1 = pinRead1;
   Laser = Laser+pVolt1;
-  pVolt2 = pinRead2 / 80.0 * 5.0;
+  pVolt2 = pinRead2;
   mCherry = mCherry+pVolt2;
   delay(2000);
   }
   
-  GFP = GFP/10;
-  Laser = Laser/10;
-  mCherry = mCherry/10;
+  GFP = GFP/(2*1023);
+  Laser = Laser/(2*1023);
+  mCherry = mCherry/(2*1023);
   
   // print in terminal
   Serial.print(" -GFP-> ");
