@@ -20,8 +20,9 @@ GFP_vec = NaN(288,1);
 Laser_vec = NaN(288,1);
 t_vec = NaN(288,1);
 
-%run for 24 hrs. take measurements every 5 min and put variables into a vector
-t_max = 600;
+%run for 24 hrs (1440 minutes). take measurements every 5 min and put
+%variables into vectors
+t_max = 1440;
 t = 0;
 j=1;
 i=1;
@@ -65,10 +66,8 @@ while(t<t_max)
         GFP = GFP/1000;
         GFP_vec(j) = GFP;
         j=j+1;
-        %change back to 300!!!!!
-        %pause(300);
-        pause(3);
-        t=(t+300+10+10+1+1)/60;
+        pause(300);
+        t=t+((300+10+10+1+1)/60);
 end
 
 %remove unused array elements
@@ -77,7 +76,7 @@ Laser_vec = rmmissing(Laser_vec);
 t_vec = rmmissing(t_vec);
 
 %plot the results
-plot(t_vec,GFP_vec,'g*')
+plot(t_vec,GFP_vec,'g-')
 hold on;
 plot(t_vec,Laser_vec,'r-')
 title('OD and GFP Readings of Bacterial Sample')
