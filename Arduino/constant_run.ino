@@ -1,13 +1,13 @@
 #define inPin0 0
-#define inPin1 1
 #define inPin2 2
+#define inPin5 5
 #define outPin8 8
 #define outPin11 11
 #define outPin12 12
 
 int pd0 = 0;
-int pd1 = 1;
 int pd2 = 2;
+int pd5 = 5;
 int pd8 = 8;
 int pd11 = 11;
 int pd12 = 12;
@@ -15,8 +15,8 @@ int pd12 = 12;
 void setup() { 
   // set photodiodes to input. Will check voltage at A0, A1, A2
   pinMode(pd0, INPUT);
-  pinMode(pd1, INPUT);
   pinMode(pd2, INPUT);
+  pinMode(pd5, INPUT);
   pinMode(pd8, OUTPUT);
   pinMode(pd11, OUTPUT);
   pinMode(pd12, OUTPUT);
@@ -33,7 +33,7 @@ void loop() {
 
   // assign pins
   int pinRead0 = analogRead(inPin0);
-  int pinRead1 = analogRead(inPin1);
+  int pinRead1 = analogRead(inPin5);
   int pinRead2 = analogRead(inPin2);
   
   // calculate V
