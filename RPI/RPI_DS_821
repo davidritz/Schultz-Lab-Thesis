@@ -1,0 +1,138 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Aug 20 16:22:42 2020
+
+@author: davidritz
+"""
+
+import numpy as np
+import piplates.DAQC2plate as DAQC2
+import matplotlib.pyplot as plt
+import time
+import math
+
+#Set up vectors for recording and graphing values
+GFP_vec = np.empty((288,1))
+GFP_vec[:] = np.NaN
+
+mCherry_vec = np.empty((288,1))
+mCherry_vec[:] = np.NaN
+
+Laser_vec = np.empty((288,1))
+Laser_vec[:] = np.NaN
+
+t_vec = np.empty((288,1))
+t_vec[:] = np.NaN
+
+#Run for 24 hrs (1440 minutes). Take measurements every 5 min and put
+#variables into vectors
+
+t_max = 1400
+t = 0
+loop = 0
+i = 0
+
+while(t<t_max):
+    t_vec[loop] = t
+    Laser = 0
+    GFP = 0
+    mCherry = 0
+    
+    #Turn all equipment off (laser, mCherry, GFP, respectively)
+    DAQC2.clrDOUTbit(1,7)
+    DAQC2.clrDOUTbit(1,5)
+    DAQC2.clrDOUTbit(1,2)
+    
+    #Laser readings... ========================================================
+    
+    #Turn laser on and pause
+    DAQC2.setDOUTbit(1,7)
+    time.sleep(2)
+    i=0
+    
+    #Take 1000 readings
+    for i in range(i,1000):
+        Laser = Laser + DAQC2.getADC(0,7)
+        time.sleep(0.01)
+    i=0
+    
+    #Turn laser off
+    DAQC2.clrDOUTbit(1,7)
+    
+    #Find average value and OD
+    Laser = Laser/1000
+    Laser = (math.log10(3.8465/Laser))/2.54
+    Laser_vec[loop] = Laser
+    time.sleep(2)
+    
+    #GFP readings... ==========================================================
+    
+    #Turn GFP LED on and pause
+    DAQC2.setDOUTbit(1,2)
+    time.sleep(2)
+    
+    #Take 1000 readings
+    for i in range(i,1000):
+        GFP = GFP + DAQC2.getADC(0,2)
+        time.sleep(0.01)
+    
+    #Turn GFP off
+    DAQC2.clrDOUTbit(1,2)
+    
+    #Find average value
+    GFP = GFP/1000
+    GFP_vec[loop] = GFP - 0.9
+    time.sleep(2)
+    
+    #mCherry readings... ======================================================
+    
+    #Turn mCherry LED on and pause
+    DAQC2.setDOUTbit(1,5)
+    time.sleep(2)
+    
+    #Take 1000 readings
+    for i in range(i,1000):
+        mCherry = mCherry + DAQC2.getADC(0,5)
+        time.sleep(0.01)
+    
+    #Turn GFP off
+    DAQC2.clrDOUTbit(1,5)
+    
+    #Find average value
+    mCherry = mCherry/1000
+    mCherry_vec[loop] = mCherry - 0.5
+    time.sleep(2)
+    
+    #Display time and OD, update time
+    print(Laser)
+    print(t)
+    t = t+((300+10+10+10+12)/60)
+    loop = loop+1
+    
+    #Pause for 5 minutes before repeating
+    time.sleep(300)
+    
+    #Repeat loop until t > t_max ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+#Remove unused array elements
+GFP_vec = GFP_vec[~np.isnan(GFP_vec)]
+mCherry_vec = mCherry_vec[~np.isnan(mCherry_vec)]
+Laser_vec = Laser_vec[~np.isnan(Laser_vec)]
+t_vec = t_vec[~np.isnan(t_vec)]
+
+#Plot the results
+plt.subplot(121)
+plt.plot(t_vec, GFP_vec,'g--', label = 'GFP')
+plt.plot(t_vec, mCherry_vec, 'b--', label = 'mCherry')
+plt.plot(t_vec, Laser_vec, 'r--', label = 'OD')
+plt.ylabel('OD or Intensity')
+plt.xlabel('Time (minutes)')
+plt.legend()
+
+plt.subplot(122)
+plt.plot(t_vec, Laser_vec, 'r--')
+
+plt.suptitle('mCherry, GFP, and OD Over Time')
+plt.xlabel('Time (minutes)')
+plt.show()
