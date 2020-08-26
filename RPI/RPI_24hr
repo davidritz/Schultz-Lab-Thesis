@@ -27,7 +27,7 @@ t_vec[:] = np.NaN
 # Run for 24 hrs (1440 minutes). Take measurements every 5 min and put
 # variables into vectors
 
-t_max = 1400
+t_max = 1100
 t = 0
 loop = 0
 i = 0
@@ -38,69 +38,68 @@ while(t<t_max):
     GFP = 0
     mCherry = 0
     
-    # Turn all equipment off (laser, mCherry, GFP, respectively)
-    DAQC2.clrDOUTbit(1,7)
-    DAQC2.clrDOUTbit(1,5)
-    DAQC2.clrDOUTbit(1,2)
+    # Turn all equipment off
+    DAQC2.setDOUTall(0,0)
     
     # Laser readings... =======================================================
     
     # Turn laser on and pause
-    DAQC2.setDOUTbit(1,7)
+    DAQC2.setDOUTbit(0,0)
     time.sleep(2)
     i=0
     
     # Take 1000 readings
     for i in range(i,1000):
-        Laser = Laser + DAQC2.getADC(0,7)
+        Laser = Laser + DAQC2.getADC(1,7)
         time.sleep(0.01)
     i=0
     
     # Turn laser off
-    DAQC2.clrDOUTbit(1,7)
+    DAQC2.setDOUTall(0,0)
     
     #Find average value and OD
     Laser = Laser/1000
-    Laser = (math.log10(3.8465/Laser))/2.54
+    Laser = (math.log10(4.2/Laser))/2.54
     Laser_vec[loop] = Laser
     time.sleep(2)
     
     # GFP readings... =========================================================
     
     # Turn GFP LED on and pause
-    DAQC2.setPWM(1,0,50.0)
+    DAQC2.setDOUTbit(0,4)
     time.sleep(2)
     
     # Take 1000 readings
+    i=0
     for i in range(i,1000):
-        GFP = GFP + DAQC2.getADC(0,2)
+        GFP = GFP + DAQC2.getADC(0,6)
         time.sleep(0.01)
     
     # Turn GFP off
-    DAQC2.setPWM(1,0,0)
+    DAQC2.setDOUTall(0,0)
     
     # Find average value
     GFP = GFP/1000
-    GFP_vec[loop] = GFP - 0.9
+    GFP_vec[loop] = GFP - 2.9
     time.sleep(2)
     
     # mCherry readings... =====================================================
     
     # Turn mCherry LED on and pause
-    DAQC2.setPWM(1,1,50.0)
+    DAQC2.setDOUTbit(0,2)
     time.sleep(2)
     
     # Take 1000 readings
     for i in range(i,1000):
-        mCherry = mCherry + DAQC2.getADC(0,5)
+        mCherry = mCherry + DAQC2.getADC(0,7)
         time.sleep(0.01)
     
     # Turn mCherry off
-    DAQC2.setPWM(1,1,0)
+    DAQC2.setDOUTall(0,0)
     
     # Find average value
     mCherry = mCherry/1000
-    mCherry_vec[loop] = mCherry - 0.5
+    mCherry_vec[loop] = mCherry - 2.7
     time.sleep(2)
     
     # Display time and OD, update time
