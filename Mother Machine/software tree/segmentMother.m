@@ -258,9 +258,11 @@ function [mask] = segmentMother(correctSeg,correctFlu,maskLoc,outName)
     
     % Output mask as tifs
     for k = 1:size(mask,3)
-        fileName = filePre+string(k)+'.tif';
+        fileNum = sprintf('%03d',k);
+        fileName = filePre+fileNum+'.tif';
         imwrite(maskEdit1(:,:,k),fileName)
     end
+    mask = maskEdit1;
 end
 
 
