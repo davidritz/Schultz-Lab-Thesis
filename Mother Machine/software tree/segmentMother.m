@@ -1,5 +1,6 @@
 function [mask] = segmentMother(correctSeg,correctFlu,maskLoc,outName)
 
+
     %% Turn off findpeaks warning, so it doesn't flood the cmd window later
     findpeaks([1 1 1 1 ]);
     [msg,id] = lastwarn;
@@ -16,60 +17,68 @@ function [mask] = segmentMother(correctSeg,correctFlu,maskLoc,outName)
         % Find x-location of channels
         xArr=sum(double(A),1);
         [bla,xCh]=findpeaks(xArr,'MinPeakDistance',40,'MinPeakHeight',100000,'MinPeakProminence',50000);
-    
+        
         % Search in python mask
         % C = mat2gray(B);
-        % Scan through mother channels
-        for i=1:size(xCh,2)
-            x=xCh(i);
-            peakCheck = smoothdata(double(sum(B(:,x-30:x+30),2)),'gaussian',[6,6]);
-            thresh1 = 5000;
-            thresh2 = 5000;
-            [troughs,trlocs] = findpeaks(-peakCheck,'MinPeakProminence',thresh2);
-            [pks, pklocs] = findpeaks(peakCheck,'MinPeakDistance',10,'MinPeakHeight',thresh1,'MinPeakProminence',thresh2);
-            
-            % If only one peak (no trough detected)
-            if size(troughs,1) == 0
-                trlocs = find(peakCheck(pklocs:end)==0,1,'first')+pklocs;
-            end
-    
-            % Identify start and stop of first peak
-            y1 = find(-peakCheck,~0,'first');
-            y2 = trlocs(1);
+
+        % Scan through mother channels IF there are any mother channels
+
+        if size(bla,2) > 0
+            for i=1:size(xCh,2)
+                x=xCh(i);
+                peakCheck = smoothdata(double(mean(B(:,x-10:x+10),2)),'gaussian',[3,3]);
+                thresh1 = 2000;
+                thresh2 = 2000;
+                [troughs,trlocs] = findpeaks(-peakCheck,'MinPeakProminence',thresh2);
+                [pks, pklocs] = findpeaks(peakCheck,'MinPeakDistance',10,'MinPeakHeight',thresh1,'MinPeakProminence',thresh2);
+
+                % If only one peak (no trough detected)
+                if size(troughs,1) == 0
+                    trlocs = find(peakCheck(pklocs:end)==0,1,'first')+pklocs;
+                end
         
-            % scan through x-direction around xCh mid location.. put
-            % pixel=1 mark near troughs at each y
-            for y=y1:y2
-                
-                % Find cell flu peak at each y..
-                cellCheck = smoothdata(double(B(y,x-30:x+30)),'gaussian',[5 5]);
-                [pks, pklocs] = findpeaks(cellCheck,'MinPeakHeight',2000,'MinPeakProminence',1000,'MinPeakDistance',20);
-    
-                if size(pks,2) ~= 0
+                % Identify start and stop of first peak
+                y1 = find(-peakCheck,~0,'first');
+                if size(trlocs,1) == 0
+                    trlocs = y1+20;
+                end
+                y2 = trlocs(1)-4;
+            
+                % scan through x-direction around xCh mid location.. put
+                % pixel=1 mark near troughs at each y
+                for y=y1:y2
                     
-                    % Find first and last location from peak where value is less
-                    % than thresh (start and end tails of peak)
-    
-                    cellL = find(cellCheck>pks/1.5,1,'first')-31+xCh(i);
-                    cellR = (61-find(flip(cellCheck,2)>pks/1.5,1,'first'))-31+xCh(i);
-                    mask(y,cellL:cellR,k) = 1;
-                    mask(y,cellR,k) = 1;
-    
-                    % overlay on img.. see how segmentation looks
-    
-%                     C(y,cellL) = 1;
-%                     C(y,cellR) = 1;
+                    % Find cell flu peak at each y..
+                    cellCheck = smoothdata(double(B(y,x-30:x+30)),'gaussian',[6 6]);
+                    [pks, pklocs] = findpeaks(cellCheck,'MinPeakHeight',2000,'MinPeakProminence',1000,'MinPeakDistance',20);
+        
+                    if size(pks,2) ~= 0
+                        
+                        % Find first and last location from peak where value is less
+                        % than thresh (start and end tails of peak)
+        
+                        cellL = find(cellCheck>pks/1.5,1,'first')-31+xCh(i);
+                        cellR = (61-find(flip(cellCheck,2)>pks/1.5,1,'first'))-31+xCh(i);
+                        mask(y,cellL:cellR,k) = 1;
+                        mask(y,cellR,k) = 1;
+        
+                        % overlay on img.. see how segmentation looks
+        
+    %                     C(y,cellL) = 1;
+    %                     C(y,cellR) = 1;
+                    end
                 end
             end
-        end
-%         figure(1)
-%         imshow(C)
-%     
-%         figure(2)
-%         imshow(mask(:,:,k))
+    %         figure(1)
+    %         imshow(C)
+    %     
+    %         figure(2)
+    %         imshow(mask(:,:,k))
+        end 
     end
     %% Mask user correction
-    
+    global maskEdit1;
+
     % Dilate mask slightly, so user can see segmentation easier
     se=strel('disk',2);
     mask = imdilate(mask,se);
@@ -247,7 +256,7 @@ function [mask] = segmentMother(correctSeg,correctFlu,maskLoc,outName)
     end
    
     %% Save as tiff
-    
+
     % Create a folder from datetime and put into masks directory
     dateString = datestr(datetime);
     dateString = strrep(dateString,':','-');
@@ -259,7 +268,7 @@ function [mask] = segmentMother(correctSeg,correctFlu,maskLoc,outName)
     % Output mask as tifs
     for k = 1:size(mask,3)
         fileNum = sprintf('%03d',k);
-        fileName = filePre+fileNum+'.tif';
+        fileName = [filePre,fileNum,'.tif'];
         imwrite(maskEdit1(:,:,k),fileName)
     end
     mask = maskEdit1;

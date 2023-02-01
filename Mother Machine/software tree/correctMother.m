@@ -35,7 +35,7 @@ function [correctSeg,correctFlu] = correctMother(AVG_TotalGREEN,rawVid)
         
         c = max(max(correctFlu(:,:,frame)));
         background = 4*mean(mean(correctFlu(:,:,frame)));
-        maxThreshold = 0.9 * c;
+        maxThreshold = 0.8 * c;
         jpegMax = 65535;
         
         for y = 1:numY

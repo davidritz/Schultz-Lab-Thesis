@@ -2,6 +2,7 @@ function [vid, outName] = loadMother(parFile,fovNum)
     
     % e.g. user inputs FOV 2, will grab 3rd file and 4th file in folder
     fovNumCorr = fovNum*2-1;
+    disp(['Loading new FOV...'])
 
     % cd into directory and order files by alphabetical order
     cd(parFile)
@@ -21,14 +22,14 @@ function [vid, outName] = loadMother(parFile,fovNum)
     
     % vid(y,x,frame,flu channel)
     
-    fovTot = size(parDir,1)/2;
+    %fovTot = size(parDir,1)/2;
     %%
     for fov=fovNumCorr:fovNumCorr+1
         fname = [parFile,'\',parDir(fov).name];
         info = imfinfo(fname);
         
         % Get tif data for single frame
-        if fov == fovNum
+        if fov == fovNumCorr
             p={info.Width};
             p=p{1};
             q={info.Height};
@@ -40,7 +41,7 @@ function [vid, outName] = loadMother(parFile,fovNum)
         for f = 1:frames
             currentImg = imread(fname,f,'Info', info);
             % If CFP
-            if fov == fovNum
+            if fov == fovNumCorr
                 vid(:,:,f,1) = currentImg;
             % Else GFP
             else 
@@ -49,7 +50,7 @@ function [vid, outName] = loadMother(parFile,fovNum)
         end
 
         % Output progress to user
-        if fov == fovNum
+        if fov == fovNumCorr
             disp(['Just loaded GFP FOV ',num2str(fovNum)])
         else
             disp(['Just loaded CFP FOV ',num2str(fovNum)])
