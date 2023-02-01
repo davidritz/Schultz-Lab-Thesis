@@ -1,5 +1,6 @@
 %% Eventually uncomment this
 %blobsGlobal = 0;
+global maskEdit1;
 %% Load FOV image files
 
 codeDir = 'C:\Users\f0046\OneDrive\Desktop\MotherMachineAnalysis';
@@ -29,27 +30,38 @@ end
 
 fovTot = size(parDir,1)/2;
 
+%% Load files from directories.. loop through all FOVs
+for fov = 1:fovTot
 
-% Load files from directories.. loop through all FOVs
-%fov = 1:fovTot;
-for fov = 2:fovTot
-    %% Load raw files
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Load raw files
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     cd(codeDir)
     % rawVid(y,x,frame,flu channel); CFP = 1, GFP = 2
     [rawVid, outName] = loadMother(parFile,fov);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Get dark scope images for flat-field correction
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %% Get dark scope images for flat-field correction
     cd(codeDir)
     if fov == 1
         [AVG_Dark,AVG_TotalGREEN,AVG_TotalBLUE] = loadCorrectMother(correctFile);
     end
-    %% Flat-field correction on the segmentation flu channel, before segmentation
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Flat-field correction on the segmentation flu channel, before segmentation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
     cd(codeDir)
     % For vid, only put in 3D with segmentation flu channel selected (CFP = 1, GFP = 2)
     % Can also correct other flu channels, but unneeded
     [correctSeg,correctFlu] = correctMother(AVG_TotalGREEN,rawVid(:,:,:,2));
     
-    %% Segment mother channels (1) automatically, then with (2) user-inputted corrections
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Segment mother channels (1) automatically, then with (2) user-inputted corrections
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Where mask tif files will be outputted. Each FOV goes into one folder,
     % which is named by datetime, OG file name
@@ -58,27 +70,26 @@ for fov = 2:fovTot
     % mask will be saved at each iteration into variable and outputted to
     % maskLoc..
     [mask] = segmentMother(correctSeg,correctFlu,maskLoc,outName);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Analyze cells in FOV
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    %% Analyze cells in FOV
     cd(codeDir)
-    if max(max(max(mask))) ~= 0
+    if max(max(max(mask(:,:,1)))) ~= 0
+        num = sprintf('%03d',fov);
+        blobsName = ['blobsGlobal_',num,'.mat'];
         % analyze cells and append cells to blobsGlobal
         if fov == 1
             [blobsGlobal] = analyzeMother(mask,rawVid);
-            %save('blobsGlobal.mat','blobsGlobal')
         else
             [blobsAppend] = analyzeMother(mask,rawVid);
             blobsGlobal = [blobsGlobal;blobsAppend];
-            % blobsAppend CFP flu values look weird.. need to assign
-            % correct flu to correct cells as well.
-            poo
-            %save(filename,variables)
         end
+        save(blobsName,'blobsGlobal')
     end
+
 end
 %% Analyze all cells in blobsGlobal
-
-
-
 
 
