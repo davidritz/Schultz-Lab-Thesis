@@ -1,7 +1,7 @@
-% Call 'g' in segmentMother.m user-correction
-function [] = graphMother(blobsGlobal,strt,stp,drugAdd)
+function logBlobs = conv2Log(blobsGlobal)
+
     % blobsGlobal (y,x,instant_length,doubling_length,doubling_counter,RFP,GFP,normal GFP,instant_growth(um/min)) for each frame
-    logBlobs = blobsGlobal(:,:,strt:stp);
+    logBlobs = blobsGlobal(:,:,1:size(blobsGlobal,3));
     
     % Change instantaneous growth to log2 scale
     logBlobs(:,3,:) = log2(logBlobs(:,3,:));
@@ -61,55 +61,4 @@ function [] = graphMother(blobsGlobal,strt,stp,drugAdd)
             end
         end
     end
-    
-    % Plot the instant growth of each cell against time
-    % Right now, units of growth are doub. per 10 min.. multiply by 6
-    % x doub./frame * frame/10 min * 60 min/hr
-    
-    t = (0:5/60:size(logBlobs,3)*(5/60)-(5/60));
-    drugAdd = 5/60*(drugAdd);
-    t = t-drugAdd;
-    close(figure(21))
-    figure(21)
-    %for c = 1:size(logBlobs,1)
-    for c = 1:size(logBlobs,1)
-        hold on
-        grow = logBlobs(c,9,2:end);
-        growthVec = grow(:);
-        plot(t(2:end),growthVec)
-    end
-    
-    ylim([-0.2 1.2])
-    xlim([-4 12])
-    y = ylim;
-    plot([0 0],[y(1) y(2)],'--k','LineWidth',3)
-    hold off
-    
-    xlabel('Time (hr)')
-    ylabel('Growth (doub./hr)')
-    title('Growth curves of cells')
-    legend()
-    
-    set(findall(gcf,'-property','FontSize'),'FontSize',26)
-    
-%     figure(20)
-%     for c = 1:size(logBlobs,1)
-%         hold on
-%         mexxy = logBlobs(c,8,2:end);
-%         mexxyVec = mexxy(:);
-%         plot(t(2:end),mexxyVec)
-%     end
-%     
-%     ylim([0 4])
-%     xlim([-4 12])
-%     y = ylim;
-%     plot([0 0],[y(1) y(2)],'--k','LineWidth',3)
-%     hold off
-%     
-%     xlabel('Time (hr)')
-%     ylabel('Norm. mexXY (mexXY/rpoD)')
-%     title('mexXY curves of cells')
-    
-%     
-%     set(findall(gcf,'-property','FontSize'),'FontSize',26)
 end

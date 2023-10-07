@@ -11,6 +11,7 @@ function [blobsGlobal] = analyzeMother(mask,rawVid)
     maskClose = mask;
     
     for k = 1:size(mask,3)
+        
         connMask = bwlabel(mask(:,:,k),4);
         numCells = max(max(connMask));
     
@@ -91,8 +92,8 @@ function [blobsGlobal] = analyzeMother(mask,rawVid)
                     blobsGlobal(b,6,k) = blobsGlobal(b,6,k)/totPix;
                     % Avg GFP
                     blobsGlobal(b,7,k) = blobsGlobal(b,7,k)/totPix;
-                    % Normalized GFP
-                    blobsGlobal(b,8,k) = double(blobsGlobal(b,7,k))/double(blobsGlobal(b,6,k));
+                    % Normalized RFP
+                    blobsGlobal(b,8,k) = double(blobsGlobal(b,6,k))/double(blobsGlobal(b,7,k));
 
                     % Count total # of mothers in FOV on frame 1
                     momCount = momCount+1;
@@ -147,8 +148,8 @@ function [blobsGlobal] = analyzeMother(mask,rawVid)
                         blobsGlobal(momCount,6,k) = blobsGlobal(momCount,6,k)/totPix;
                         % Avg GFP
                         blobsGlobal(momCount,7,k) = blobsGlobal(momCount,7,k)/totPix;
-                        % Normalized GFP
-                        blobsGlobal(momCount,8,k) = double(blobsGlobal(momCount,7,k))/double(blobsGlobal(momCount,6,k));
+                        % Normalized RFP
+                        blobsGlobal(momCount,8,k) = double(blobsGlobal(momCount,6,k))/double(blobsGlobal(momCount,7,k));
 
                         % Add to total # of mothers in FOV
                         momCount = momCount+1;
@@ -208,8 +209,8 @@ function [blobsGlobal] = analyzeMother(mask,rawVid)
                         blobsGlobal(indexOfMin,6,k) = blobsGlobal(indexOfMin,6,k)/totPix;
                         % Avg GFP
                         blobsGlobal(indexOfMin,7,k) = blobsGlobal(indexOfMin,7,k)/totPix;
-                        % Normalized GFP
-                        blobsGlobal(indexOfMin,8,k) = double(blobsGlobal(indexOfMin,7,k))/double(blobsGlobal(indexOfMin,6,k));
+                        % Normalized RFP
+                        blobsGlobal(indexOfMin,8,k) = double(blobsGlobal(indexOfMin,6,k))/double(blobsGlobal(indexOfMin,7,k));
 
                     end
                 end

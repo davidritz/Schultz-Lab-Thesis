@@ -1,5 +1,5 @@
 % cd into directory and order files by alphabetical order
-parFile = 'C:\Users\f0046\OneDrive\Desktop\MotherMachineAnalysis\masks\KOmexY14-Jul-2023 08-33-13';
+parFile = 'C:\Users\f0046\OneDrive\Desktop\MotherMachineAnalysis\masks\KOmexZ\KOmexZ_fov1';
 cd(parFile)
 parDir = dir;
 [~,ind]=sort({parDir.name});

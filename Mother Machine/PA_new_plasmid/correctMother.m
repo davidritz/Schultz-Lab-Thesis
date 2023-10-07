@@ -2,8 +2,8 @@
 
 % Adapted from https://github.com/SystemsBiologyUniandes/MotherMachineAnalysis/blob/master/correction.ipynb
 
-% Inputted vid should only be 3D i.e. vid(:,:,:,2) --> 2 is GFP flu channel for PA
-function [correctSeg,correctFlu] = correctMother(AVG_TotalGREEN,rawVid)
+% Inputted vid should only be 3D i.e. vid(:,:,:,1) --> 1 is GFP flu channel for PA
+function [correctSeg,correctFlu] = correctMother(AVG_TotalGREEN,rawVid,drugAdd)
 
     % Get size data of each frame and number of frames
     numY = size(rawVid,1);
@@ -36,21 +36,52 @@ function [correctSeg,correctFlu] = correctMother(AVG_TotalGREEN,rawVid)
         % ADD 6/22/23
         % Dynamic threshold for each column of cells
         % Don't look at media channel
+        
+
         A = correctFlu(1:800,:,frame);
         
         % Find x-location of channels
-        winWidth = 20;
+        winWidth = 60;
         xArr=sum(double(A),1);
-        [bla,xCh]=findpeaks(xArr,'MinPeakDistance',40,'MinPeakHeight',10000,'MinPeakProminence',10000);
+        [bla,xCh]=findpeaks(xArr,'MinPeakDistance',40,'MinPeakHeight',5000,'MinPeakProminence',3000);
+
         for i = 1:size(xCh,2)
-            c = max(max(correctFlu(:,xCh(i)-winWidth:xCh(i)+winWidth,frame)));
+
+            if xCh(i)-winWidth < 1
+                leftX = 1;
+            else
+                leftX = xCh(i)-winWidth;
+            end
+
+            if xCh(i)+winWidth > size(AVG_TotalGREEN,2)
+                rightX = size(AVG_TotalGREEN,2);
+            else
+                rightX = xCh(i)+winWidth;
+            end
+
+            c = max(max(correctFlu(:,leftX:rightX,frame)));
             % 4.8, 0.99 6/23
             %background = 4*mean(mean(correctFlu(:,xCh(i)-winWidth:xCh(i)+winWidth,frame)));
-            background = 110;
-            maxThreshold = 0.99 * c;
+            
+            if frame > drugAdd+99
+                background = 30;
+                maxThreshold = 0.8 * c;
+            elseif frame > drugAdd+39
+                background = 40;
+                maxThreshold = 0.9 * c;
+            elseif frame > drugAdd+9
+                % Less flu threshold after drug added
+                background = 50;
+                maxThreshold = 0.9 * c;
+            else
+                % changed background from 110 9/8/23
+                background = 90;
+                maxThreshold = 0.99 * c;
+            end
             jpegMax = 65535;
+
             for y = 1:numY
-                for x = xCh(i)-winWidth:xCh(i)+winWidth
+                for x = leftX:rightX
                     if 0.5 * c > maxThreshold 
                         if correctFlu(y,x,frame) < background 
                             correctSeg(y,x,frame) = 0;
@@ -76,7 +107,7 @@ function [correctSeg,correctFlu] = correctMother(AVG_TotalGREEN,rawVid)
             end
         end
         if mod(frame,100) == 0
-            disp(['Just applied FFC on frame ',num2str(frame)])
+            disp(['Applied FFC on frame ',num2str(frame)])
         end
     end
 end

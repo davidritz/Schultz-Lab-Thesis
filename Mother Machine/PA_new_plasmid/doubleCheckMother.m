@@ -1,6 +1,6 @@
 function [blobsGlobalNew,doubling] = doubleCheckMother(blobsGlobal,idx,frame)
 
-    doubFac = 0.7;
+    doubFac = 0.71;
     
     currentLen = blobsGlobal(idx,3,frame);
     lastLen = blobsGlobal(idx,3,frame-1);
