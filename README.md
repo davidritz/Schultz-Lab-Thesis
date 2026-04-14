@@ -1,4 +1,6 @@
 # Schultz-Lab
+My main thesis paper's analysis code can be found here: https://github.com/schultz-lab/Response-Dynamics  
+
 RPI-> Raspberry Pi code to run custom-built chemostat for bacterial competitions.  
 
 Mother Machine-> Single-mother bacterial cell tracking in mother machine microfluidic devices.
