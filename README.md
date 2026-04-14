@@ -1,6 +1,10 @@
 # Schultz-Lab
 RPI-> Raspberry Pi code to run custom-built chemostat for bacterial competitions.  
 
-Mother Machine-> Single-mother cell tracking in mother machine microfluidic devices.
+Mother Machine-> Single-mother bacterial cell tracking in mother machine microfluidic devices.
 
-https://github.com/user-attachments/assets/39e15e43-b299-4e22-97c2-514f9f2bc957
+
+
+https://github.com/user-attachments/assets/849db83f-1d5a-4f36-af11-8d04decdd5f3
+
+
