@@ -1,5 +1,5 @@
 # Schultz-Lab
-Arduino-> Raspberry Pi code to run custom-built chemostat for bacterial competitions.  
+RPI-> Raspberry Pi code to run custom-built chemostat for bacterial competitions.  
 
 Mother Machine-> Single-mother cell tracking in mother machine microfluidic devices.
 
