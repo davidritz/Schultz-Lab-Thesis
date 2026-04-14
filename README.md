@@ -1,5 +1,5 @@
 # Schultz-Lab
-My main thesis paper's analysis code can be found here: https://github.com/schultz-lab/Response-Dynamics  
+RPI and mother machine code used to collect data for "Common regulatory mutation increases single-cell survival to antibiotic exposures in Pseudomonas aeruginosa" by Ritz et al. The paper's analysis code can be found here: https://github.com/schultz-lab/Response-Dynamics  
 
 RPI-> Raspberry Pi code to run custom-built chemostat for bacterial competitions.  
 
