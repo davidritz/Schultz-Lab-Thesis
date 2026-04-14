@@ -1,11 +1,7 @@
 # Schultz-Lab
-RPI and mother machine code used to collect data for "Common regulatory mutation increases single-cell survival to antibiotic exposures in Pseudomonas aeruginosa" by Ritz et al. The paper's analysis code for figure generation can be found here: https://github.com/schultz-lab/Response-Dynamics  
+RPI is Raspberry Pi code to run custom-built chemostat for bacterial competitions. Mother machine code is used for single-mother bacterial cell tracking in mother machine microfluidic devices (sample analysis video below tracking length and mexXY expression of cells). This custom-built software was used for data collection in "Common regulatory mutation increases single-cell survival to antibiotic exposures in Pseudomonas aeruginosa" by Ritz et al. The publication's analysis code for figure generation can be found here: https://github.com/schultz-lab/Response-Dynamics.  
 
-RPI-> Raspberry Pi code to run custom-built chemostat for bacterial competitions.  
-
-Mother Machine-> Single-mother bacterial cell tracking in mother machine microfluidic devices.
-
-
+I also analyzed a P. aeruginosa clinical dataset from a person with cystic fibrosis' lungs in "Within-host population structure, migration, and parallel adaptive evolution of Pseudomonas aeruginosa in the context of mild-to-moderate cystic fibrosis lung disease" by Ritz et al. The publication's analysis code for figure generation can be found here: https://github.com/debhogan-208/Ritz_Clay_450_Pa_isolates.  
 
 https://github.com/user-attachments/assets/849db83f-1d5a-4f36-af11-8d04decdd5f3
 
